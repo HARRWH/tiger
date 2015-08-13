@@ -1,0 +1,154 @@
+function FindProxyForURL(url, host) {
+
+// Convert everything to lower case.
+
+var lhost = host.toLowerCase();
+host = lhost;
+myip = myIpAddress();
+hostip=dnsResolve(host);
+
+// Set the default proxy variable that users get if they don’t match
+// any more specific rule. 
+
+//proxy = "PROXY 134.20.11.89:8080; PROXY 134.20.11.88:8080; PROXY 134.20.11.87:8080";
+
+proxy = "PROXY webbalance.inl.gov:8080";
+
+// Bypass Localhost
+if ((host == "localhost") ||
+    (shExpMatch(host, "localhost.*")) ||
+    (host == "127.0.0.1"))
+    {
+       return "DIRECT";
+    }
+
+//Bypass Proxy for FTP
+if (url.substring(0,4) == "ftp:")
+    {
+       return "DIRECT";
+    }
+    
+//INL Servers outside of INL Networks and DOE and Desktop voicemail) 
+if (dnsDomainIs(host, "energy.inl.gov") ||
+    dnsDomainIs(host, "myvoicemail.inl.gov") ||
+    dnsDomainIs(host, "id.doe.gov") ||
+    dnsDomainIs(host, "www.id.energy.gov") ||
+    dnsDomainIs(host, "www-test.inl.gov") ||
+    dnsDomainIs(host, "www6.inl.gov") ||
+    dnsDomainIs(host, "www.inl.gov") ||
+    dnsDomainIs(host, "dev.inl.gov") ||
+    shExpMatch(url, "http://nuclearapp.inl.gov/*") ||
+    dnsDomainIs(host, "amwtp.inl.gov") ||
+    dnsDomainIs(host, "gmail.inl.gov") ||
+    dnsDomainIs(host, "gcal.inl.gov") ||
+    dnsDomainIs(host, "ues.inl.gov") ||
+    dnsDomainIs(host, "user-experience-site.inl.gov") ||
+    dnsDomainIs(host, "google-user-experience-site.inl.gov") ||
+    dnsDomainIs(host, "gdocs.inl.gov") ||
+    dnsDomainIs(host, "gsites.inl.gov") ||
+    dnsDomainIs(host, "ggroups.inl.gov") ||
+    dnsDomainIs(host, "gvideo.inl.gov") ||
+    dnsDomainIs(host, "ics-cert-training.inl.gov") ||
+    dnsDomainIs(host, "nuclearapp.inl.gov"))
+    {
+    	return proxy;
+    }
+
+//Problem Children through BlueCoat Webcache
+if (dnsDomainIs(host, ".portal.bwxt.com") ||
+    dnsDomainIs(host, ".msds.ashland.com") ||
+    dnsDomainIs(host, ".arcgis.com") ||
+    dnsDomainIs(host, ".entrust.net") ||
+    dnsDomainIs(host, "entrust.net") ||
+    dnsDomainIs(host, ".kcp.com"))
+    {
+       return "PROXY 134.20.11.86:8080";
+     }
+
+//Oracle SSL VPN for Gary Cobb's DBA group (temporary rule - remove March 6, 2014)
+//if (isInNet(hostip, "141.146.226.140", "255.255.255.255"))
+//	{
+//	return "DIRECT";
+//	}
+//
+//if (dnsDomainIs(host, "adc-ssl-cnc-vsite.oracle.com"))
+//    {
+//       return "DIRECT";
+//     }
+
+//Problem Children through any Webcache server
+//     if (dnsDomainIs(host, "ntrs.nasa.gov")) 
+//         {
+//            return "DIRECT";
+//     }
+     
+// Moderate Enclave to Proxy
+// if (isInNet(myip, "134.20.14.0", "255.255.255.0") && shExpMatch(hostip, "134.20.14.*"))
+//    {
+//    	return "DIRECT";
+//    }
+
+//if (isInNet(myip, "134.20.5.0", "255.255.255.0") ||
+//    isInNet(myip, "134.20.14.0", "255.255.255.0") ||
+//    isInNet(myip, "134.20.119.0", "255.255.255.0")) 
+//    {
+//        return proxy;
+//    }
+
+    
+//FN Access
+//if (isInNet(hostip, "204.134.148.0", "255.255.255.0"))
+//	{
+//	return "DIRECT";
+//	}
+
+//Guest network proxy
+//
+//if (isInNet(hostip, "204.134.220.222", "255.255.255.255"))
+//	{
+//	return "DIRECT";
+//	}
+	
+// VPN and Wireless Users to Proxy for DMZ
+if (isInNet(myip, "141.221.32.0", "255.255.224.0") && shExpMatch(hostip, "204.134.*") ||
+	isInNet(myip, "141.221.32.0", "255.255.224.0") && shExpMatch(hostip, "141.221.*") ||
+        isInNet(myip, "134.20.22.0", "255.255.255.0") && shExpMatch(hostip, "141.221.*")||
+	isInNet(myip, "134.20.22.0", "255.255.255.0") && shExpMatch(hostip, "204.134.*"))
+    {
+    	return proxy;
+    }
+
+//All DMZ Traffic through proxy
+//if (isInNet(hostip, "204.134.0.0", "255.255.0.0"))
+//	{
+//	return proxy;
+//	}
+    
+//Internal Wireless Access - Removed 4/18/2011 per mtg notes
+//    if (isInNet(myip, "141.221.32.0", "255.255.224.0"))
+//        {
+//        	return proxy;
+//    }
+
+//All INL & ICP Traffic Direct
+if (shExpMatch(host, "134.20.*") || shExpMatch(host, "141.221.*") || isPlainHostName(host) || isInNet(hostip, "134.20.0.0", "255.255.0.0")  || isInNet(hostip, "141.221.0.0", "255.255.0.0")  ||  isInNet(hostip, "10.0.0.0", "255.0.0.0")   || isInNet(hostip, "172.16.0.0", "255.240.0.0")   || isInNet(hostip, "192.168.0.0", "255.255.0.0"))
+    {
+    return "DIRECT";
+    }
+
+if (dnsDomainIs(host,".inl.gov") ||
+    dnsDomainIs(host,".inel.gov") ||
+    dnsDomainIs(host,".icp.gov") ||
+    dnsDomainIs(host,".icp.doe.gov"))
+    {
+    return "DIRECT";
+    }
+
+// Default return condition is the proxy, since it’s assumed that everything
+// else is on the Internet.
+
+return proxy;
+ 
+
+} // End of function
+
