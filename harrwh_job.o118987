@@ -1,0 +1,63 @@
+/home/harrwh/projects/tiger
+*** Warning, AutoPtr is deprecated and will be removed in a future library version! ./include/libmesh/auto_ptr.h, line 270, compiled Jun 25 2015 at 09:18:53 ***
+
+
+Framework Information:
+MOOSE version:           git commit ec3f390 on 2015-08-12
+PETSc Version:           3.6.0
+Current Time:            Thu Aug 13 14:51:04 2015
+Executable Timestamp:    Thu Aug 13 14:47:36 2015
+
+Parallelism:
+  Num Processors:          8
+  Num Threads:             1
+
+Mesh: 
+  Distribution:            serial
+  Mesh Dimension:          2
+  Spatial Dimension:       3
+  Nodes:                   
+    Total:                 160801
+    Local:                 20334
+  Elems:                   
+    Total:                 160000
+    Local:                 20000
+  Num Subdomains:          1
+  Num Partitions:          8
+  Partitioner:             metis
+
+Nonlinear System:
+  Num DOFs:                482403
+  Num Local DOFs:          61002
+  Variables:               { "T" "Chi_X" "Chi_Y" } 
+  Finite Element Types:    "LAGRANGE" 
+  Approximation Orders:    "FIRST" 
+
+Auxiliary System:
+  Num DOFs:                1440801
+  Num Local DOFs:          180334
+  Variables:               "RGB_aux_variable" "adapt_aux_variable" { "indicator" "marker" } { "RGB" "conductivity" 
+                             "density" "q_generated" "specific_heat" } 
+  Finite Element Types:    "MONOMIAL" "LAGRANGE" "MONOMIAL" "MONOMIAL" 
+  Approximation Orders:    "CONSTANT" "FIRST" "CONSTANT" "CONSTANT" 
+
+Execution Information:
+  Executioner:             Steady
+  Solver Mode:             NEWTON
+
+
+
+Reading image(s)...
+          ...image read finished
+ 0 Nonlinear |R| = [32m1.742442e+04[39m
+ 1 Nonlinear |R| = [32m1.977290e-06[39m
+
+Postprocessor Values:
++----------------+----------------+----------------+
+| time           | k_xx           | k_yy           |
++----------------+----------------+----------------+
+|   1.000000e+00 |   1.436793e+02 |   1.486048e+02 |
++----------------+----------------+----------------+
+
+
+done
